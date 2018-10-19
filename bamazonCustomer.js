@@ -15,7 +15,7 @@ connection.connect(function(err) {
         console.log(err);
     }
     else {
-        console.log('connected as id ' + connection.threadId);
+        console.log('connected as id ' + connection.threadId + '\n');
         showProducts();
     }
 });
@@ -43,6 +43,15 @@ function showProducts() {
     });
 }
 
+function validate(value) {
+    if (isNaN(value) === false && parseInt(value) > 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 function userInquire(results) {
     inquirer
         .prompt([
@@ -50,41 +59,27 @@ function userInquire(results) {
                 name: 'itemNumber',
                 type: 'input',
                 message: 'Enter the ID # of the item you wish to buy',
-                validate: function(value) {
-                    if (isNaN(value) === false) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
+                validate: validate
             },
             {
+                name: 'itemQuantity',
                 type: 'input',
                 message: 'How many do you wish to purchase?',
-                name: 'itemQuantity',
-                validate: function(value) {
-                    if (isNaN(value) === false) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
+                validate: validate
             }
         ])
         .then(answers => {
-            console.log('item number', answers.itemNumber);
-            console.log('item quantity', answers.itemQuantity);
+            let productFound = false;
             for (i=0; i<results.length; i++) {
                 if (results[i].item_id == answers.itemNumber) {
+                    productFound = true;
                     if (results[i].stock_quantity >= answers.itemQuantity) {
                         let purchaseTotal = results[i].price * answers.itemQuantity;
                         connection.query(
                             'UPDATE products SET ? WHERE ?',
                             [
                                 {
-                                    stock_quantity: results[i].stock_quantity - answers.itemQuantity
+                                    stock_quantity: parseInt(results[i].stock_quantity) - parseInt(answers.itemQuantity)
                                 },
                                 {
                                     item_id: results[i].item_id
@@ -94,23 +89,27 @@ function userInquire(results) {
                                 if (error) {
                                     console.log(error);
                                 }
-                                console.log('\nPurchase successful! Total cost: $' + purchaseTotal);
+                                console.log('\nPurchase successful! Total cost: $' + purchaseTotal + '\n');
                                 showProducts();
                             }
                         )
                     }
                     else {
                         console.log('\nSorry, that item is understocked. Only ' + JSON.stringify(results[i].stock_quantity).replace(/["]+/g, '')
-                        + ' available.');
+                        + ' available.\n');
                         showProducts();
                     }
                 }
             }
+            if (!productFound) {
+                console.log('\nSorry, that item could not be found. Try again.\n');
+                showProducts();
+            }
         });
 }
-
+console.log('adding event listener');
 process.on('SIGINT', function() {
-    console.log('\nDisconnecting from database and closing application. . .');
+    console.log('\nDisconnecting from database and closing application. . .\n');
     connection.end();
     process.exit( );
 });
