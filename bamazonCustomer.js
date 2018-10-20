@@ -11,35 +11,27 @@ const connection = mysql.createConnection({
 });
 
 connection.connect(function(err) {
-    if (err) {
-        console.log(err);
-    }
-    else {
-        console.log('connected as id ' + connection.threadId + '\n');
-        showProducts();
-    }
+    if (err) throw err;
+    console.log('connected as id ' + connection.threadId + '\n');
+    showProducts();
 });
 
 function showProducts() {
     connection.query('SELECT * FROM products', function(err, results) {
+        if (err) throw err;
         let itemArray = [];
-        if (err) {
-            console.log(err);
+        for (i=0; i<results.length; i++) {
+            let item = {
+                'Item ID#': JSON.stringify(results[i].item_id).replace(/["]+/g, ''),
+                'Product Name': JSON.stringify(results[i].product_name).replace(/["]+/g, ''),
+                'Department': JSON.stringify(results[i].department_name).replace(/["]+/g, ''),
+                'Price': '$' + JSON.stringify(results[i].price).replace(/["]+/g, ''),
+                'Stock': JSON.stringify(results[i].stock_quantity).replace(/["]+/g, '')
+            };
+            itemArray.push(item);
         }
-        else {
-            for (i=0; i<results.length; i++) {
-                let item = {
-                    'Item ID#': JSON.stringify(results[i].item_id).replace(/["]+/g, ''),
-                    'Product Name': JSON.stringify(results[i].product_name).replace(/["]+/g, ''),
-                    'Department': JSON.stringify(results[i].department_name).replace(/["]+/g, ''),
-                    'Price': '$' + JSON.stringify(results[i].price).replace(/["]+/g, ''),
-                    'Stock': JSON.stringify(results[i].stock_quantity).replace(/["]+/g, '')
-                };
-                itemArray.push(item);
-            }
-            console.table(itemArray);
-            userInquire(results);
-        }
+        console.table(itemArray);
+        userInquire(results);
     });
 }
 
@@ -85,10 +77,8 @@ function userInquire(results) {
                                     item_id: results[i].item_id
                                 }
                             ],
-                            function(error) {
-                                if (error) {
-                                    console.log(error);
-                                }
+                            function(err) {
+                                if (err) throw err;
                                 console.log('\nPurchase successful! Total cost: $' + purchaseTotal + '\n');
                                 showProducts();
                             }
@@ -107,7 +97,7 @@ function userInquire(results) {
             }
         });
 }
-console.log('adding event listener');
+
 process.on('SIGINT', function() {
     console.log('\nDisconnecting from database and closing application. . .\n');
     connection.end();
