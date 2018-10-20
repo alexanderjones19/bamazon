@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log('connected as id ' + connection.threadId + '\n');
+    console.log('Connected as ID ' + connection.threadId + '\n');
     managerView();
 });
 
@@ -136,7 +136,7 @@ function addInventory() {
                             ],
                             function(err) {
                                 if (err) throw err;
-                                console.log('\nStocking successful. ' + answers.itemQuantity + ' added to inventory.\n');
+                                console.log('\nRestocking successful. ' + answers.itemQuantity + ' added to inventory.\n');
                                 managerView();
                             }
                         )

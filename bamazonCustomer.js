@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log('connected as id ' + connection.threadId + '\n');
+    console.log('Connected as ID ' + connection.threadId + '\n');
     showProducts();
 });
 
@@ -79,7 +79,7 @@ function userInquire(results) {
                             ],
                             function(err) {
                                 if (err) throw err;
-                                console.log('\nPurchase successful! Total cost: $' + purchaseTotal + '\n');
+                                console.log('\nPurchase successful! Total cost: $' + purchaseTotal.toFixed(2) + '\n');
                                 showProducts();
                             }
                         )
