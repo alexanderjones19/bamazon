@@ -40,3 +40,7 @@ To exit the program simply press:
 * control + c
 
 When the user exits they will be informed that the program is stopping and the database connection is ending.
+
+Here is a link to a video demo of the workflow of the app:
+
+https://drive.google.com/file/d/1oMU8ckVd6UrPFk1sPBs7IjcInKRYxw_w/view
