@@ -86,9 +86,7 @@ function validate(value) {
     if (isNaN(value) === false && parseInt(value) > 0) {
         return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
 function addInventory() {
@@ -153,7 +151,60 @@ function addInventory() {
 }
 
 function addNewProduct() {
-
+    console.log('add new product called');
+    inquirer
+        .prompt([
+            {
+                name: 'itemName',
+                type: 'input',
+                message: 'Name of product',
+                validate: function stringValidate(value) {
+                    if (value.length > 0) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            {
+                name: 'departmentName',
+                type: 'input',
+                message: 'Department of product',
+                validate: function stringValidate(value) {
+                    if (value.length > 0) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            {
+                name: 'itemPrice',
+                type: 'input',
+                message: 'Price of product',
+                validate: validate
+            },
+            {
+                name: 'itemStock',
+                type: 'input',
+                message: 'Stock quantity of product',
+                validate: validate
+            }
+        ])
+        .then(function(answers) {
+            connection.query(
+                'INSERT INTO products SET ?',
+                {
+                    product_name: answers.itemName.trim(),
+                    department_name: answers.departmentName.trim(),
+                    price: answers.itemPrice,
+                    stock_quantity: answers.itemStock
+                },
+                function(err) {
+                    if (err) throw err;
+                    console.log('\n' + answers.itemName.trim() + ' added to Bamazon.\n');
+                    managerView();
+                }
+            )
+        });
 }
 
 process.on('SIGINT', function() {
