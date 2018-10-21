@@ -103,6 +103,7 @@ function addInventory() {
             };
             itemArray.push(item);
         }
+        console.log('\n');
         console.table(itemArray);
         inquirer
             .prompt([
