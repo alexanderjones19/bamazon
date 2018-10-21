@@ -43,4 +43,4 @@ When the user exits they will be informed that the program is stopping and the d
 
 Here is a link to a video demo of the workflow of the app:
 
-https://drive.google.com/file/d/1oMU8ckVd6UrPFk1sPBs7IjcInKRYxw_w/view
+https://drive.google.com/file/d/12ttYID2cZtTcgrZ2s4o5QzYG8kdd6QQj/view
