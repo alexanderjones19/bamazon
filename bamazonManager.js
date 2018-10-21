@@ -151,7 +151,6 @@ function addInventory() {
 }
 
 function addNewProduct() {
-    console.log('add new product called');
     inquirer
         .prompt([
             {
